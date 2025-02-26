@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { useRecoilState, useResetRecoilState } from "recoil";
-import { chatLogState } from "../states/chatLogState";
+import { useRecoilState} from "recoil";
+import { chatLogState } from "../states/ChatLogState";
 
 const ChatForm = () => {
   const [input, setInput] = useState<string>("");
@@ -9,7 +9,37 @@ const ChatForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const newId = chatLog.length > 0 ? chatLog[chatLog.length - 1].id + 1 : 1;
+
+    const newUserMessage = { id: newId, content: input, sender: "user" };
+    const updatedMessages = [...chatLog, newUserMessage];
+    setChatLog(updatedMessages);
     setInput("");
+
+    try {
+      const res = await fetch(`/api/response`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=UTF-8",
+        },
+        body: JSON.stringify({ prompt: input }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Response error");
+      }
+
+      const result = await res.json();
+      const newGptId = newId + 1;
+      const newGptMessage = {
+        id: newGptId,
+        content: result.gptResponseMessage,
+        sender: "other",
+      };
+      setChatLog([...updatedMessages, newGptMessage]);
+    } catch (error) {
+      console.error("Error fetching GPT response:", error);
+    }
   };
 
   return (

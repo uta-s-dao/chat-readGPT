@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useRecoilState } from "recoil";
-import { chatLogState } from "../../states/chatLogState";
+import { chatLogState } from "../states/ChatLogState";
 
 type MessageType = {
   id: number;
@@ -10,7 +10,8 @@ type MessageType = {
 };
 
 const ChatMessage = () => {
-  const [chatLog, setChatLog] = useRecoilState(chatLogState);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [chatLog, _setChatLog] = useRecoilState(chatLogState);
   return (
     <>
       {chatLog.map((message: MessageType) => {

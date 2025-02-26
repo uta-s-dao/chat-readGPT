@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { RecoilRoot, useRecoilState } from "recoil";
-import ChatMessage from "./ChatMessage";
-import ChatForm from "./ChatForm";
+import { RecoilRoot } from "recoil";
+import ChatMessage from "../components/ChatMessage";
+import ChatForm from "../components/ChatForm";
 
 const ChatClient = () => {
   return (
