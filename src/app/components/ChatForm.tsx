@@ -1,19 +1,41 @@
 "use client";
 import React, { useState } from "react";
-import { useRecoilState} from "recoil";
-import { chatLogState } from "../states/ChatLogState";
+import { chatLogState, Message } from "../states/ChatLogState";
+
+// CustomEventのインターフェースを定義
+interface ChatUpdateEvent extends CustomEvent {
+  detail: Message[];
+}
 
 const ChatForm = () => {
   const [input, setInput] = useState<string>("");
-  const [chatLog, setChatLog] = useRecoilState(chatLogState);
+  // 初期値をchatLogStateの初期メッセージに設定
+  const [chatLog, setChatLog] = useState<Message[]>(
+    chatLogState.initialMessages
+  );
+
+  // Update messages and dispatch a custom event to notify ChatMessage
+  const updateMessages = (newMessages: Message[]) => {
+    setChatLog(newMessages);
+    window.dispatchEvent(
+      new CustomEvent("chat-update", { detail: newMessages }) as ChatUpdateEvent
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newId = chatLog.length > 0 ? chatLog[chatLog.length - 1].id + 1 : 1;
+
+    // 安全にchatLogの長さを確認
+    const chatLogArray = Array.isArray(chatLog) ? chatLog : [];
+    const chatLogLength = chatLogArray.length;
+
+    // 新しいIDを安全に計算
+    const newId =
+      chatLogLength > 0 ? chatLogArray[chatLogLength - 1].id + 1 : 1;
 
     const newUserMessage = { id: newId, content: input, sender: "user" };
-    const updatedMessages = [...chatLog, newUserMessage];
-    setChatLog(updatedMessages);
+    const updatedMessages = [...chatLogArray, newUserMessage];
+    updateMessages(updatedMessages);
     setInput("");
 
     try {
@@ -36,7 +58,7 @@ const ChatForm = () => {
         content: result.gptResponseMessage,
         sender: "other",
       };
-      setChatLog([...updatedMessages, newGptMessage]);
+      updateMessages([...updatedMessages, newGptMessage]);
     } catch (error) {
       console.error("Error fetching GPT response:", error);
     }

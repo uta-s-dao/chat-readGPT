@@ -1,18 +1,17 @@
-// states/chatLogState.ts
-import { atom } from "recoil";
+// states/ChatLogState.ts
+// Recoilを使わずに通常のオブジェクトとして実装
 
 // メッセージオブジェクトの型を定義
-interface Message {
+export interface Message {
   id: number;
   content: string;
   sender: string;
 }
 
-// gptResponseStateの型をMessageの配列として定義
-export const chatLogState = atom<Message[]>({
-  key: "chatLogState",
-  default: [
+// 初期メッセージの配列
+export const chatLogState = {
+  initialMessages: [
     { id: 1, content: "こんにちは！", sender: "user" },
     { id: 2, content: "元気ですか？", sender: "other" },
-  ],
-});
+  ] as Message[],
+};

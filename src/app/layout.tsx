@@ -15,11 +15,14 @@ export default function RootLayout({
     <html lang='en'>
       <body>
         <div className='flex min-h-screen'>
-          <div className=' bg-blue-200 w=1/3 pt-1'>Chat Manager</div>
+          {/* サイドバー - 幅を固定し、余白とスタイリングを追加 */}
+          <div className='bg-blue-100 w-64 p-4 shadow-md'>
+            <h2 className='font-bold text-lg mb-4'>Chat Manager</h2>
+            {/* サイドバーのコンテンツをここに追加できます */}
+          </div>
 
-          {/* メインコンテンツ */}
-
-          <div className='w-full flex justify-center '>{children}</div>
+          {/* メインコンテンツエリア - 余白を追加して見やすく */}
+          <div className='flex-1 p-6'>{children}</div>
         </div>
       </body>
     </html>
